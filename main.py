@@ -8,7 +8,7 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 2  # 25
+WORK_MIN = 1  # 25
 SHORT_BREAK_MIN = 1  # 5
 LONG_BREAK_MIN = 20
 reps = 0
@@ -17,7 +17,7 @@ timer = None
 
 # ---------------------------- TIMER RESET ------------------------------- #
 def reset_timer():
-    # global timer
+    """ Reset pomodoro timer application """
     window.after_cancel(timer)
 
     global reps
@@ -51,7 +51,6 @@ def start_timer():
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 def count_down(count):
     """ Counts down time """
-    global reps
 
     count_min = count // 60
     count_sec = count % 60
@@ -61,11 +60,11 @@ def count_down(count):
     canvas.itemconfig(timer_text, text=f"{count_min}:{count_sec}")
     if count > 0:
         global timer
-        timer = window.after(100, count_down, count-1)
+        timer = window.after(50, count_down, count-1)
     else:
         start_timer()
         work_sessions = reps // 2
-        checks = work_sessions*"✔ "
+        checks = work_sessions*"✔"
         label_checks.config(text=checks)
 
 
@@ -81,24 +80,26 @@ label_timer.grid(row=0, column=1)
 
 # canvas
 canvas = Canvas(width=200, height=224, bg=YELLOW, highlightthickness=0)
+# set highlightthickness=0 to remove canvas border
 tomato_image = PhotoImage(file="images/tomato.png")
 canvas.create_image(100, 112, image=tomato_image)
-timer_text = canvas.create_text(100, 130, text="00:00", font=(
-    FONT_NAME, 30, "bold"), fill="white")
+timer_text = canvas.create_text(
+    100, 130, text="00:00", font=(FONT_NAME, 30, "bold"), fill="white")
 canvas.grid(row=1, column=1)
 
 # Buttons
 button_start = Button(text="Start", font=(FONT_NAME, 12),
-                      command=start_timer, padx=10)
-button_start.grid(row=2, column=0)
+                      command=start_timer, padx=10,)
+button_start.grid(row=2, column=0, pady=5)
 
 button_reset = Button(text="Reset", font=(FONT_NAME, 12),
                       command=reset_timer, padx=10)
-button_reset.grid(row=2, column=2)
+button_reset.grid(row=2, column=2, pady=5)
 
-# Iteration label
+# Working session checkmark count label
 label_checks = Label(text="", font=(
     FONT_NAME, 18), bg=YELLOW, fg=GREEN)
-label_checks.grid(row=3, column=1)
+label_checks.grid(row=3, column=0, columnspan=3, pady=5)
+# Note: when column spanning with grid, 'column=' entry in grid() needs to be starting column
 
 window.mainloop()
